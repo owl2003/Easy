@@ -1,0 +1,83 @@
+{
+  "expo": {
+    "name": "Easy",
+    "slug": "easy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/icon.png",
+    "userInterfaceStyle": "light",
+    "layoutDirection": "LTR",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#ffffff",
+      "newArchEnabled": true
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*",
+      "assets/onboarding/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mahfod.abdenasser",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      },
+      "supportsRTL": false
+    },
+    "android": {
+      "supportsRTL": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.mahfod.abdenasser",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./assets/sounds/notification.wav"
+          ],
+          "mode": "production"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e9fd2e28-5612-4315-8b3f-8c82599ddf93"
+      },
+      "RESEND_API_KEY": "re_YLtH1efr_Pieg4sFZQhqhWQBGPdx3FjE2",
+      "EMAIL_FROM": "confiserie.chetioui@gmail.com"
+    },
+    "owner": "owl20033",
+    "notification": {
+      "icon": "./assets/icons/icon.png",
+      "color": "#ffffff",
+      "iosDisplayInForeground": true,
+      "androidMode": "default",
+      "androidCollapsedTitle": "New Notification"
+    }
+  }
+}
