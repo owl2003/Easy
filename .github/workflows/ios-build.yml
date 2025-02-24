@@ -1,0 +1,53 @@
+name: Build iOS App
+
+on:
+  push:
+    branches:
+      - main  # Change if your branch is different
+
+jobs:
+  build-ios:
+    runs-on: macos-latest  # GitHub provides macOS runners for free
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.1  # Use your Node.js version
+
+      - name: Install dependencies
+        run: |
+          npm install -g yarn
+          yarn install
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios && pod install
+
+      - name: Build iOS app
+        run: |
+          cd ios
+          xcodebuild -workspace Easy.xcworkspace \
+            -scheme Easy \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
+            archive
+
+      - name: Export IPA
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath $GITHUB_WORKSPACE/build
+
+      - name: Upload IPA as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: build/*.ipa
