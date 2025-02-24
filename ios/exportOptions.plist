@@ -1,21 +1,18 @@
-﻿      - name: Create Export Options Plist
-        run: |
-          cat <<EOF > ios/exportOptions.plist
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>ad-hoc</string>  # Or use 'development' if testing on device
-              <key>teamID</key>
-              <string>YOUR_TEAM_ID</string>  # Replace with your Apple Developer Team ID
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>com.yourcompany.app</key>  # Replace with your app’s bundle ID
-                  <string>Your_Provisioning_Profile_Name</string>
-              </dict>
-          </dict>
-          </plist>
-          EOF
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>ad-hoc</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>stripSwiftSymbols</key>
+  <true/>
+  <key>compileBitcode</key>
+  <false/>
+  <key>signingCertificate</key>
+  <string>-</string>  <!-- No valid certificate -->
+  <key>provisioningProfiles</key>
+  <dict/>
+</dict>
+</plist>
