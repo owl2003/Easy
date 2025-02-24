@@ -1,83 +1,40 @@
-name: Build iOS App
-
-on:
-  push:
-    branches:
-      - main  # Change if your branch is different
+name: Build iOS IPA
+on: [push]  # Trigger on push to the repository
 
 jobs:
-  build-ios:
+  build:
     runs-on: macos-latest  
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set Expo Environment Variable
-        run: echo "EXPO_DEV=false" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20.x  
+          node-version: 22  # Use Node.js 18 (or your preferred version)
 
-      - name: Install dependencies
-        run: |
-          npm install -g yarn
-          yarn install
+      - name: Install npm dependencies
+        run: npm install
 
-      - name: Install CocoaPods and Dependencies
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
-          pod install --repo-update --verbose
+          pod install
 
-      - name: Create Export Options Plist
-        run: |
-          cat <<EOF > ios/exportOptions.plist
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>developer-id</string>  
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>stripSwiftSymbols</key>
-              <true/>
-              <key>compileBitcode</key>
-              <false/>
-              <key>signingCertificate</key>
-              <string>-</string>
-              <key>provisioningProfiles</key>
-              <dict/>
-          </dict>
-          </plist>
-          EOF
-
-      - name: Build iOS app (Disable Signing)
+      - name: Build iOS app
         run: |
           cd ios
-          xcodebuild -workspace Easy.xcworkspace \
-            -scheme Easy \
-            -sdk iphoneos \
-            -configuration Release \
-            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            archive
+          xcodebuild -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphonesimulator -derivedDataPath build
 
-      - name: Export Unsigned IPA
+      - name: Create unsigned IPA
         run: |
-          cd ios
-          xcodebuild -exportArchive \
-            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
-            -exportOptionsPlist exportOptions.plist \
-            -exportPath $GITHUB_WORKSPACE/build \
-            CODE_SIGNING_ALLOWED=NO
+          cd ios/build/Build/Products/Release-iphonesimulator
+          mkdir Payload
+          cp -r YourApp.app Payload
+          zip -r YourApp.ipa Payload
 
-      - name: Upload IPA as Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v3
         with:
-          name: ios-app
-          path: build/*.ipa
+          name: YourApp.ipa
+          path: ios/build/Build/Products/Release-iphonesimulator/YourApp.ipa
