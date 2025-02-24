@@ -3,7 +3,7 @@ name: Build iOS App
 on:
   push:
     branches:
-      - main  
+      - main  # Change if your branch is different
 
 jobs:
   build-ios:
@@ -54,7 +54,7 @@ jobs:
           </plist>
           EOF
 
-      - name: Build iOS app
+      - name: Build iOS app (Disable Signing)
         run: |
           cd ios
           xcodebuild -workspace Easy.xcworkspace \
@@ -62,6 +62,8 @@ jobs:
             -sdk iphoneos \
             -configuration Release \
             -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             archive
 
