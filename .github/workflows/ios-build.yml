@@ -3,29 +3,35 @@ on: [push]  # Trigger on push to the repository
 
 jobs:
   build:
-    runs-on: macos-latest  
+    runs-on: macos-latest  # Use a macOS runner
     steps:
+      # Step 1: Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Use the latest version
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4  # Use the latest version
         with:
           node-version: 22  # Use Node.js 18 (or your preferred version)
 
+      # Step 3: Install dependencies
       - name: Install npm dependencies
         run: npm install
 
+      # Step 4: Install CocoaPods dependencies
       - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
 
+      # Step 5: Build the iOS app for the simulator
       - name: Build iOS app
         run: |
           cd ios
           xcodebuild -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphonesimulator -derivedDataPath build
 
+      # Step 6: Create an unsigned IPA
       - name: Create unsigned IPA
         run: |
           cd ios/build/Build/Products/Release-iphonesimulator
@@ -33,8 +39,9 @@ jobs:
           cp -r YourApp.app Payload
           zip -r YourApp.ipa Payload
 
+      # Step 7: Upload the unsigned IPA as an artifact
       - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Use the latest version
         with:
           name: YourApp.ipa
           path: ios/build/Build/Products/Release-iphonesimulator/YourApp.ipa
