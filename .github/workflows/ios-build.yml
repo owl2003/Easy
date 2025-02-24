@@ -39,7 +39,7 @@ jobs:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>development</string>  
+              <string>developer-id</string>  
               <key>signingStyle</key>
               <string>manual</string>
               <key>stripSwiftSymbols</key>
@@ -73,7 +73,8 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
             -exportOptionsPlist exportOptions.plist \
-            -exportPath $GITHUB_WORKSPACE/build
+            -exportPath $GITHUB_WORKSPACE/build \
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Upload IPA as Artifact
         uses: actions/upload-artifact@v4
