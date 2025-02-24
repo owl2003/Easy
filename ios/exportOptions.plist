@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿cat <<EOF > ios/exportOptions.plist
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -11,8 +12,9 @@
   <key>compileBitcode</key>
   <false/>
   <key>signingCertificate</key>
-  <string>-</string>  <!-- No valid certificate -->
+  <string>-</string>
   <key>provisioningProfiles</key>
   <dict/>
 </dict>
 </plist>
+EOF
