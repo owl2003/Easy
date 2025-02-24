@@ -29,19 +29,19 @@ jobs:
       - name: Build iOS app
         run: |
           cd ios
-          xcodebuild -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphonesimulator -derivedDataPath build
+          xcodebuild -workspace Easy.xcworkspace -scheme Easy -configuration Release -sdk iphonesimulator -derivedDataPath build
 
       # Step 6: Create an unsigned IPA
       - name: Create unsigned IPA
         run: |
           cd ios/build/Build/Products/Release-iphonesimulator
           mkdir Payload
-          cp -r YourApp.app Payload
-          zip -r YourApp.ipa Payload
+          cp -r Easy.app Payload
+          zip -r Easy.ipa Payload
 
       # Step 7: Upload the unsigned IPA as an artifact
       - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4  # Use the latest version
         with:
-          name: YourApp.ipa
-          path: ios/build/Build/Products/Release-iphonesimulator/YourApp.ipa
+          name: Easy.ipa
+          path: ios/build/Build/Products/Release-iphonesimulator/Easy.ipa
