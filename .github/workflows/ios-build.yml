@@ -3,11 +3,11 @@ name: Build iOS App
 on:
   push:
     branches:
-      - main  # Change if your branch is different
+      - main  
 
 jobs:
   build-ios:
-    runs-on: macos-latest  # GitHub provides macOS runners for free
+    runs-on: macos-latest  
 
     steps:
       - name: Checkout repository
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x  # Use LTS version for stability
+          node-version: 20.x  
 
       - name: Install dependencies
         run: |
@@ -39,9 +39,17 @@ jobs:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>ad-hoc</string>  # Change if needed
-              <key>teamID</key>
-              <string>YOUR_TEAM_ID</string>  # Replace with your Apple Developer Team ID
+              <string>development</string>  
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>compileBitcode</key>
+              <false/>
+              <key>signingCertificate</key>
+              <string>-</string>
+              <key>provisioningProfiles</key>
+              <dict/>
           </dict>
           </plist>
           EOF
@@ -57,7 +65,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             archive
 
-      - name: Export IPA
+      - name: Export Unsigned IPA
         run: |
           cd ios
           xcodebuild -exportArchive \
@@ -70,4 +78,3 @@ jobs:
         with:
           name: ios-app
           path: build/*.ipa
-
