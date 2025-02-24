@@ -13,6 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set Expo Environment Variable
+        run: echo "EXPO_DEV=false" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -23,10 +26,10 @@ jobs:
           npm install -g yarn
           yarn install
 
-      - name: Install CocoaPods
+      - name: Install CocoaPods and Dependencies
         run: |
-          sudo gem install cocoapods --pre
-          cd ios && pod install
+          cd ios
+          pod install --repo-update --verbose
 
       - name: Create Export Options Plist
         run: |
@@ -36,7 +39,7 @@ jobs:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>ad-hoc</string>  # Change if needed (app-store, enterprise, development)
+              <string>ad-hoc</string>  # Change if needed
               <key>teamID</key>
               <string>YOUR_TEAM_ID</string>  # Replace with your Apple Developer Team ID
           </dict>
@@ -51,6 +54,7 @@ jobs:
             -sdk iphoneos \
             -configuration Release \
             -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
             archive
 
       - name: Export IPA
