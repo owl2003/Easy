@@ -1,47 +1,53 @@
-name: Build iOS IPA
-on: [push]  # Trigger on push to the repository
+name: Build iOS App (Unsigned IPA)
+
+on:
+  push:
+    branches:
+      - main  # Change this if needed
 
 jobs:
-  build:
-    runs-on: macos-latest  # Use a macOS runner
+  build-ios:
+    runs-on: macos-latest  
+
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4  # Use the latest version
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v4  # Use the latest version
+        uses: actions/setup-node@v4
         with:
-          node-version: 22  # Use Node.js 18 (or your preferred version)
+          node-version: 20.x  
 
-      # Step 3: Install dependencies
-      - name: Install npm dependencies
-        run: npm install
+      - name: Install dependencies
+        run: |
+          npm install -g yarn
+          yarn install
 
-      # Step 4: Install CocoaPods dependencies
-      - name: Install CocoaPods dependencies
+      - name: Install CocoaPods
         run: |
           cd ios
-          pod install
+          pod install --repo-update
 
-      # Step 5: Build the iOS app for the simulator
-      - name: Build iOS app
+      - name: Build iOS App
         run: |
           cd ios
-          xcodebuild -workspace Easy.xcworkspace -scheme Easy -configuration Release -sdk iphonesimulator -derivedDataPath build
+          xcodebuild -workspace Easy.xcworkspace \
+            -scheme Easy \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
 
-      # Step 6: Create an unsigned IPA
-      - name: Create unsigned IPA
+      - name: Create Unsigned IPA
         run: |
-          cd ios/build/Build/Products/Release-iphonesimulator
-          mkdir Payload
-          cp -r Easy.app Payload
+          cd ios
+          mkdir -p Payload
+          cp -r build/Easy.xcarchive/Products/Applications/Easy.app Payload/
           zip -r Easy.ipa Payload
 
-      # Step 7: Upload the unsigned IPA as an artifact
-      - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4  # Use the latest version
+      - name: Upload Unsigned IPA
+        uses: actions/upload-artifact@v4
         with:
           name: Easy.ipa
-          path: ios/build/Build/Products/Release-iphonesimulator/Easy.ipa
+          path: ios/Easy.ipa
