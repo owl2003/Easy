@@ -3,7 +3,7 @@ name: Build iOS App (Unsigned IPA)
 on:
   push:
     branches:
-      - main  # Change this if needed
+      - main  
 
 jobs:
   build-ios:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x  
+          node-version: 22.x  
 
       - name: Install dependencies
         run: |
@@ -39,11 +39,11 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             archive
 
-      - name: Create Unsigned IPA
+      - name: Export Unsigned IPA
         run: |
           cd ios
           mkdir -p Payload
-          cp -r build/Easy.xcarchive/Products/Applications/Easy.app Payload/
+          cp -r $GITHUB_WORKSPACE/build/Easy.xcarchive/Products/Applications/Easy.app Payload/
           zip -r Easy.ipa Payload
 
       - name: Upload Unsigned IPA
