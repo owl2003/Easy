@@ -1,73 +1,53 @@
-name: Build iOS App
+name: Build iOS App (Unsigned IPA)
 
 on:
   push:
     branches:
-      - main  # Change if your branch is different
+      - main  
 
 jobs:
   build-ios:
-    runs-on: macos-latest  # GitHub provides macOS runners for free
+    runs-on: macos-latest  
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set Expo Environment Variable
-        run: echo "EXPO_DEV=false" >> $GITHUB_ENV
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x  # Use LTS version for stability
+          node-version: 22.x  
 
       - name: Install dependencies
         run: |
           npm install -g yarn
           yarn install
 
-      - name: Install CocoaPods and Dependencies
+      - name: Install CocoaPods
         run: |
           cd ios
-          pod install --repo-update --verbose
+          pod install --repo-update
 
-      - name: Create Export Options Plist
-        run: |
-          cat <<EOF > ios/exportOptions.plist
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>ad-hoc</string>  # Change if needed
-              <key>teamID</key>
-              <string>YOUR_TEAM_ID</string>  # Replace with your Apple Developer Team ID
-          </dict>
-          </plist>
-          EOF
-
-      - name: Build iOS app
+      - name: Build iOS App
         run: |
           cd ios
           xcodebuild -workspace Easy.xcworkspace \
             -scheme Easy \
-            -sdk iphoneos \
             -configuration Release \
+            -sdk iphoneos \
             -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
             CODE_SIGNING_ALLOWED=NO \
             archive
 
-      - name: Export IPA
+      - name: Export Unsigned IPA
         run: |
           cd ios
-          xcodebuild -exportArchive \
-            -archivePath $GITHUB_WORKSPACE/build/Easy.xcarchive \
-            -exportOptionsPlist exportOptions.plist \
-            -exportPath $GITHUB_WORKSPACE/build
+          mkdir -p Payload
+          cp -r $GITHUB_WORKSPACE/build/Easy.xcarchive/Products/Applications/Easy.app Payload/
+          zip -r Easy.ipa Payload
 
-      - name: Upload IPA as Artifact
+      - name: Upload Unsigned IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-app
-          path: build/*.ipa
-
+          name: Easy.ipa
+          path: ios/Easy.ipa
