@@ -5,12 +5,13 @@ import {
   Text,
   View,
   StatusBar,
-  KeyboardAvoidingView,
   ActivityIndicator,
   Dimensions,
   TouchableOpacity,
   TextInput,
   Platform,
+  SafeAreaView,
+  ScrollView
 } from "react-native";
 import { colors } from "../../constants";
 import CustomInput from "../../components/CustomInput";
@@ -205,132 +206,136 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <InternetConnectionAlert onChange={(connectionState) => {}}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.container}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
-      >
+      <View style={styles.mainContainer}>
         <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
-        
-        <LinearGradient
-          colors={[colors.primary, colors.primary + 'DD', colors.primary + '99']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerSection}
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+          showsVerticalScrollIndicator={false}
         >
-          <View style={styles.logoWrapper}>
-            <Image style={styles.logo} source={header_logo} />
-            <View style={styles.logoGlow} />
-          </View>
-         
-        </LinearGradient>
+          <LinearGradient
+            colors={[colors.primary, colors.primary + 'DD', colors.primary + '99']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.headerSection}
+          >
+            <View style={styles.logoWrapper}>
+              <Image style={styles.logo} source={header_logo} />
+              <View style={styles.logoGlow} />
+            </View>
+          </LinearGradient>
 
-        <View style={styles.formSection}>
-          <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>مرحباً بعودتك!</Text>
-            <Text style={styles.welcomeSubText}>سجل دخولك للمتابعة</Text>
-          </View>
-
-          <View style={styles.formContainer}>
-            {error ? (
-              <View style={styles.errorContainer}>
-                <Ionicons name="alert-circle" size={24} color={colors.danger} />
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
-            ) : null}
-
-            <View style={styles.inputsContainer}>
-              <View style={styles.inputField}>
-                <Ionicons 
-                  name={getInputIcon(identifier)}
-                  size={20} 
-                  color={identifier ? colors.primary : colors.muted} 
-                />
-                <TextInput
-                  value={identifier}
-                  onChangeText={(text) => {
-                    setIdentifier(text);
-                    if (/[a-zA-Z]/.test(text)) {
-                      setLoginType('email');
-                    } else {
-                      setLoginType('email');
-                    }
-                  }}
-                  placeholder="البريد الإلكتروني أو رقم الهاتف"
-                  placeholderTextColor={colors.muted}
-                  style={styles.input}
-                  keyboardType={loginType === 'phone' ? 'phone-pad' : 'email-address'}
-                  autoCapitalize="none"
-                />
-              </View>
-
-              <View style={styles.inputField}>
-                <Ionicons 
-                  name="lock-closed-outline" 
-                  size={20} 
-                  color={password ? colors.primary : colors.muted} 
-                />
-                <TextInput
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  placeholder="كلمة المرور"
-                  placeholderTextColor={colors.muted}
-                  style={styles.input}
-                />
-              </View>
+          <View style={styles.formSection}>
+            <View style={styles.welcomeContainer}>
+              <Text style={styles.welcomeText}>مرحباً بعودتك!</Text>
+              <Text style={styles.welcomeSubText}>سجل دخولك للمتابعة</Text>
             </View>
 
-            <TouchableOpacity 
-              onPress={() => navigation.navigate("forgetpassword")}
-              style={styles.forgetPasswordContainer}
-            >
-              <Text style={styles.ForgetText}>نسيت كلمة المرور؟</Text>
-            </TouchableOpacity>
+            <View style={styles.formContainer}>
+              {error ? (
+                <View style={styles.errorContainer}>
+                  <Ionicons name="alert-circle" size={24} color={colors.danger} />
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              ) : null}
 
-            <TouchableOpacity
-              style={[
-                styles.loginButton,
-                (!identifier || !password) && styles.loginButtonDisabled
-              ]}
-              onPress={loginHandle}
-              disabled={!identifier || !password || isloading}
-            >
-              {isloading ? (
-                <Loading style={styles.buttonLoading} />
-              ) : (
-                <Text style={styles.loginButtonText}>تسجيل الدخول</Text>
-              )}
-            </TouchableOpacity>
+              <View style={styles.inputsContainer}>
+                <View style={styles.inputField}>
+                  <Ionicons 
+                    name={getInputIcon(identifier)}
+                    size={20} 
+                    color={identifier ? colors.primary : colors.muted} 
+                  />
+                  <TextInput
+                    value={identifier}
+                    onChangeText={(text) => {
+                      setIdentifier(text);
+                      if (/[a-zA-Z]/.test(text)) {
+                        setLoginType('email');
+                      } else {
+                        setLoginType('email');
+                      }
+                    }}
+                    placeholder="البريد الإلكتروني أو رقم الهاتف"
+                    placeholderTextColor={colors.muted}
+                    style={styles.input}
+                    keyboardType={loginType === 'phone' ? 'phone-pad' : 'email-address'}
+                    autoCapitalize="none"
+                  />
+                </View>
 
-            <View style={styles.socialContainer}>
-              <View style={styles.dividerContainer}>
-                <View style={styles.divider} />
-                <Text style={styles.dividerText}>أو</Text>
-                <View style={styles.divider} />
+                <View style={styles.inputField}>
+                  <Ionicons 
+                    name="lock-closed-outline" 
+                    size={20} 
+                    color={password ? colors.primary : colors.muted} 
+                  />
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholder="كلمة المرور"
+                    placeholderTextColor={colors.muted}
+                    style={styles.input}
+                  />
+                </View>
               </View>
 
-              <View style={styles.bottomContainer}>
-                <Text style={styles.bottomText}>ليس لديك حساب؟</Text>
-                <TouchableOpacity 
-                  onPress={() => navigation.navigate("signup")}
-                  style={styles.signupButton}
-                >
-                  <Text style={styles.signupText}>إنشاء حساب جديد</Text>
-                </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => navigation.navigate("forgetpassword")}
+                style={styles.forgetPasswordContainer}
+              >
+                <Text style={styles.ForgetText}>نسيت كلمة المرور؟</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.loginButton,
+                  (!identifier || !password) && styles.loginButtonDisabled
+                ]}
+                onPress={loginHandle}
+                disabled={!identifier || !password || isloading}
+              >
+                {isloading ? (
+                  <Loading style={styles.buttonLoading} />
+                ) : (
+                  <Text style={styles.loginButtonText}>تسجيل الدخول</Text>
+                )}
+              </TouchableOpacity>
+
+              <View style={styles.socialContainer}>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.divider} />
+                  <Text style={styles.dividerText}>أو</Text>
+                  <View style={styles.divider} />
+                </View>
+
+                <View style={styles.bottomContainer}>
+                  <Text style={styles.bottomText}>ليس لديك حساب؟</Text>
+                  <TouchableOpacity 
+                    onPress={() => navigation.navigate("signup")}
+                    style={styles.signupButton}
+                  >
+                    <Text style={styles.signupText}>إنشاء حساب جديد</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </ScrollView>
+      </View>
     </InternetConnectionAlert>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   headerSection: {
     height: height * 0.32, // Slightly increased for better spacing

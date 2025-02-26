@@ -106,34 +106,29 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <InternetConnectionAlert>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      >
+      <View style={styles.container}>
         <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
-        
-        <LinearGradient
-          colors={[colors.primary, colors.primary_light]}
-          style={styles.headerSection}
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.logoWrapper}>
-            <Image source={header_logo} style={styles.logo} />
-          </View>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>إنشاء حساب</Text>
-            <Text style={styles.headerSubtitle}>
-              قم بإنشاء حسابك على ChetiouiConfiserie للوصول إلى المنتجات
-            </Text>
-          </View>
-        </LinearGradient>
-
-        <View style={styles.formSection}>
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollViewContent}
+          <LinearGradient
+            colors={[colors.primary, colors.primary_light]}
+            style={styles.headerSection}
           >
+            <View style={styles.logoWrapper}>
+              <Image source={header_logo} style={styles.logo} />
+            </View>
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerTitle}>إنشاء حساب</Text>
+              <Text style={styles.headerSubtitle}>
+                قم بإنشاء حسابك على ChetiouiConfiserie للوصول إلى المنتجات
+              </Text>
+            </View>
+          </LinearGradient>
+
+          <View style={styles.formSection}>
             {error ? (
               <View style={styles.errorContainer}>
                 <Ionicons name="alert-circle" size={24} color={colors.danger} />
@@ -197,20 +192,20 @@ const SignupScreen = ({ navigation }) => {
                 <Text style={styles.loginText}>تسجيل الدخول</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
-        </View>
-
-        {loading && (
-          <View style={styles.loadingContainer}>
-            <LottieView
-              source={require('../../assets/candy-loading.json')}
-              autoPlay
-              loop
-              style={styles.loadingAnimation}
-            />
           </View>
-        )}
-      </KeyboardAvoidingView>
+
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <LottieView
+                source={require('../../assets/candy-loading.json')}
+                autoPlay
+                loop
+                style={styles.loadingAnimation}
+              />
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </InternetConnectionAlert>
   );
 };
@@ -221,6 +216,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   headerSection: {
     height: height * 0.35,
@@ -258,14 +256,6 @@ const styles = StyleSheet.create({
     marginTop: -20,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingHorizontal: width * 0.05,
-    paddingTop: height * 0.03,
-    paddingBottom: height * 0.05,
   },
   errorContainer: {
     flexDirection: 'row',

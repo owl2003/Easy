@@ -89,7 +89,7 @@ const MyOrderDetailScreen = ({ navigation, route }) => {
       hour: 'numeric',
       minute: 'numeric'
     };
-    return new Date(dateString).toLocaleDateString('ar-SA', options);
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
   const fetchOrderDetails = async () => {

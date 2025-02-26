@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  KeyboardAvoidingView,
+  ScrollView,
   Platform,
 } from 'react-native';
 import { colors } from "../../constants";
@@ -107,66 +107,69 @@ const PhoneVerificationScreen = ({ navigation, route }) => {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back-circle" size={32} color={colors.muted} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.content}>
-        <Text style={styles.title}>التحقق من رقم الجوال</Text>
-        <Text style={styles.subtitle}>
-          تم إرسال رمز التحقق إلى الرقم {phone}
-        </Text>
-
-        {loading && (
-          <LottieView
-            source={require('../../assets/candy-loading.json')}
-            autoPlay
-            loop
-            style={styles.loadingAnimation}
-          />
-        )}
-
-        <CustomAlert message={error} type="error" />
-
-        <View style={styles.otpContainer}>
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              ref={ref => inputs.current[index] = ref}
-              style={styles.otpInput}
-              value={digit}
-              onChangeText={(value) => handleOtpChange(index, value)}
-              onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(index, key)}
-              keyboardType="numeric"
-              maxLength={1}
-              selectTextOnFocus
-            />
-          ))}
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back-circle" size={32} color={colors.muted} />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
-          style={styles.verifyButton} 
-          onPress={verifyOtp}
-          disabled={loading}
-        >
-          <Text style={styles.verifyButtonText}>تحقق</Text>
-        </TouchableOpacity>
+        <View style={styles.content}>
+          <Text style={styles.title}>التحقق من رقم الجوال</Text>
+          <Text style={styles.subtitle}>
+            تم إرسال رمز التحقق إلى الرقم {phone}
+          </Text>
 
-        <TouchableOpacity 
-          style={styles.resendButton} 
-          onPress={resendOtp}
-          disabled={loading}
-        >
-          <Text style={styles.resendButtonText}>إعادة إرسال الرمز</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          {loading && (
+            <LottieView
+              source={require('../../assets/candy-loading.json')}
+              autoPlay
+              loop
+              style={styles.loadingAnimation}
+            />
+          )}
+
+          <CustomAlert message={error} type="error" />
+
+          <View style={styles.otpContainer}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                ref={ref => inputs.current[index] = ref}
+                style={styles.otpInput}
+                value={digit}
+                onChangeText={(value) => handleOtpChange(index, value)}
+                onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(index, key)}
+                keyboardType="numeric"
+                maxLength={1}
+                selectTextOnFocus
+              />
+            ))}
+          </View>
+
+          <TouchableOpacity 
+            style={styles.verifyButton} 
+            onPress={verifyOtp}
+            disabled={loading}
+          >
+            <Text style={styles.verifyButtonText}>تحقق</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.resendButton} 
+            onPress={resendOtp}
+            disabled={loading}
+          >
+            <Text style={styles.resendButtonText}>إعادة إرسال الرمز</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -174,6 +177,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.light,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   header: {
     padding: 20,
